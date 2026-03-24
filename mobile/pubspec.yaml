@@ -1,0 +1,78 @@
+name: fieldpulse
+description: Field technician job management app
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Navigation
+  go_router: ^14.2.0
+
+  # HTTP & Connectivity
+  dio: ^5.4.3
+  connectivity_plus: ^6.0.3
+
+  # Local DB (Offline-first)
+  drift: ^2.18.0
+  sqlite3_flutter_libs: ^0.5.24
+  path_provider: ^2.1.3
+  path: ^1.9.0
+
+  # Auth & Security
+  flutter_secure_storage: ^9.2.2
+  local_auth: ^2.3.0
+
+  # Camera & Images
+  camera: ^0.10.5+9
+  image_picker: ^1.1.2
+  image: ^4.2.0
+
+  # Maps & Location
+  url_launcher: ^6.3.0
+  geolocator: ^13.0.1
+
+  # Notifications
+  firebase_core: ^3.6.0
+  firebase_messaging: ^15.1.3
+  flutter_local_notifications: ^18.0.1
+
+  # Utilities
+  intl: ^0.19.0
+  uuid: ^4.4.2
+  permission_handler: ^11.3.1
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.4
+  drift_dev: ^2.18.0
+  build_runner: ^2.4.11
+  riverpod_generator: ^2.4.3
+
+  flutter_lints: ^4.0.0
+  mockito: ^5.4.4
+flutter_launcher_icons:
+    android: true
+    ios: true
+    image_path: "icons8-jobs-60 (1).png"
+    min_sdk_android: 23
+    adaptive_icon_background: "#1E3A8A"
+    adaptive_icon_foreground: "icons8-jobs-60 (1).png"
+    web:
+      generate: false
+flutter:
+  uses-material-design: true
