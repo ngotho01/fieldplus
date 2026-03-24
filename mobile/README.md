@@ -151,5 +151,3 @@ flutter test integration_test/app_test.dart
 - E2E tests require a running backend on the test device's network
 
 ---
-
-## Project Structure
