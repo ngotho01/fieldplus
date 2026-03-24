@@ -229,20 +229,35 @@ class JobsRepository {
 
     // Try to sync immediately
     try {
-      await _dio.patch(
+      final resp = await _dio.patch(
         ApiConstants.jobStatus(id),
         data: {
           'status':         newStatus,
           'client_version': clientVersion,
         },
       );
-      // Success — mark as synced
-      await _db.jobsDao.markJobSynced(id, clientVersion + 1);
+
+      // Success — read the exact new version from the server response
+      final newVersion =
+          (resp.data as Map<String, dynamic>)['server_version'] as int?
+              ?? (clientVersion + 1);
+
+      await _db.jobsDao.markJobSynced(id, newVersion);
+
+      // ← THIS IS THE FIX: clear any queued retries for this job
+      // so SyncService doesn't retry with the old client_version
+      final queue = await _db.syncDao.getPendingItems();
+      for (final item in queue) {
+        if (item.entityId == id && item.entityType == 'status_update') {
+          await _db.syncDao.dequeue(item.id);
+        }
+      }
+
       return null; // no conflict
+
     } on DioException catch (e) {
       if (e.response?.statusCode == 409) {
         final data = e.response?.data as Map<String, dynamic>;
-        // Return conflict info so UI can show dialog
         return ConflictInfo(
           jobId:         id,
           serverVersion: data['server_version'] as int,
@@ -250,7 +265,17 @@ class JobsRepository {
           localStatus:   newStatus,
         );
       }
-      // Offline or other error — enqueue for later
+
+      // Offline — remove any existing queue item for this job first
+      // to avoid duplicate entries with stale versions
+      final queue = await _db.syncDao.getPendingItems();
+      for (final item in queue) {
+        if (item.entityId == id && item.entityType == 'status_update') {
+          await _db.syncDao.dequeue(item.id);
+        }
+      }
+
+      // Then enqueue fresh
       await _db.syncDao.enqueue(
         SyncQueueTableCompanion(
           entityType: const Value('status_update'),
@@ -265,9 +290,7 @@ class JobsRepository {
       );
       return null;
     }
-  }
-
-}
+  }}
 class ConflictInfo {
   final String jobId;
   final int    serverVersion;

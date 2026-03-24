@@ -151,3 +151,18 @@ flutter test integration_test/app_test.dart
 - E2E tests require a running backend on the test device's network
 
 ---
+## Platform Testing
+
+### Android
+Tested and verified on:
+- Physical device: Samsung Galaxy (Android 14)
+- Features verified: Login, biometrics, job list,
+  checklist, photo capture, signature, offline sync
+
+### iOS
+- iOS build verified via GitHub Actions (macOS runner)
+- See Actions tab for build logs
+- Physical iOS device testing pending Mac access
+- All platform-specific code uses Flutter's
+  cross-platform APIs (local_auth, camera, geolocator)
+  which are fully iOS compatible
